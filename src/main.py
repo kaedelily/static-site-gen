@@ -1,32 +1,29 @@
-from shutil import rmtree
-from pathlib import Path
-from copy_static import copy_static_content
-import sys
+import os
+import shutil
 
+from copystatic import copy_files_recursive
+from gencontent import generate_page
 
-dir_path_static = Path("/home/onodac/workspace/github.com/kaedelily/static-site-generator/static")
-dir_path_public = Path("/home/onodac/workspace/github.com/kaedelily/static-site-generator/docs")
-dir_path_content = Path("/home/onodac/workspace/github.com/kaedelily/static-site-generator/content")
-path_template = "./template.html"
-default_basepath = "/"
+dir_path_static = "./static"
+dir_path_public = "./public"
+dir_path_content = "./content"
+template_path = "./template.html"
 
 
 def main():
-    basepath = default_basepath
-    if len(sys.argv) > 1:
-        basepath = sys.argv[1]
+    print("Deleting public directory...")
+    if os.path.exists(dir_path_public):
+        shutil.rmtree(dir_path_public)
 
-    if dir_path_public.exists():
-        rmtree(dir_path_public)
+    print("Copying static files to public directory...")
+    copy_files_recursive(dir_path_static, dir_path_public)
 
-    print("--> Creating public directory...")
-    dir_path_public.mkdir(parents=True, exist_ok=True)
-
-    print("--> Copying static content to public content...")
-    copy_static_content(dir_path_static, dir_path_public, path_template, basepath)
-
-    print("--> Generating content...")
-    print("Success!")
+    print("Generating page...")
+    generate_page(
+        os.path.join(dir_path_content, "index.md"),
+        template_path,
+        os.path.join(dir_path_public, "index.html"),
+    )
 
 
 main()
