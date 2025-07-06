@@ -1,16 +1,16 @@
 import re
-from text_node_to_html_node import text_node_to_html_node
+
+from splitnodes import text_to_textnodes
 from textnode import (
     TextType,
     TextNode,
+    text_node_to_html_node,
 )
 from htmlnode import (
     LeafNode,
     ParentNode
 )
-from inline_markdown import (
-    text_to_textnodes,
-)
+
 from block_markdown import (
     BlockType,
     markdown_to_blocks, 

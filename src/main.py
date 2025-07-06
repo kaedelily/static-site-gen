@@ -1,11 +1,32 @@
-from textnode import TextNode, TextType
+from shutil import rmtree
+from pathlib import Path
+from copy_static import copy_static_content
+import sys
+
+
+dir_path_static = Path("/home/onodac/workspace/github.com/kaedelily/static-site-generator/static")
+dir_path_public = Path("/home/onodac/workspace/github.com/kaedelily/static-site-generator/docs")
+dir_path_content = Path("/home/onodac/workspace/github.com/kaedelily/static-site-generator/content")
+path_template = "./template.html"
+default_basepath = "/"
 
 
 def main():
-    node = TextNode("This is some anchor text", TextType.LINK, "https://www.boot.dev")
-    print(node)
-    # This is a placeholder for the main function logic.
-    # You can add your code here to implement the functionality you need.
+    basepath = default_basepath
+    if len(sys.argv) > 1:
+        basepath = sys.argv[1]
 
-if __name__ == "__main__":
-    main()
+    if dir_path_public.exists():
+        rmtree(dir_path_public)
+
+    print("--> Creating public directory...")
+    dir_path_public.mkdir(parents=True, exist_ok=True)
+
+    print("--> Copying static content to public content...")
+    copy_static_content(dir_path_static, dir_path_public, path_template, basepath)
+
+    print("--> Generating content...")
+    print("Success!")
+
+
+main()
